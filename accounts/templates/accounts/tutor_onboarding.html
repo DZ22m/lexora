@@ -1,0 +1,69 @@
+{% extends "main/base.html" %}
+
+{% block title %}Lexora — إعداد ملف المعلّم{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 700px;">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h1 class="fw-bold mb-2">إعداد ملف المعلّم</h1>
+        <p class="text-secondary mb-4">أكملي بياناتك ليظهر ملفك للطلاب بعد المراجعة.</p>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">الاسم</label>
+              <input name="name" class="form-control" required value="{{ tutor.name|default:'' }}">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">اللغة</label>
+              <input name="language" class="form-control" placeholder="English / Arabic" required value="{{ tutor.language|default:'' }}">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">الدولة</label>
+              <input name="country" class="form-control" required value="{{ tutor.country|default:'' }}">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">السعر / الدرس (USD)</label>
+              <input name="price" type="number" min="0" class="form-control" required value="{{ tutor.price|default:'' }}">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">نبذة</label>
+              <textarea name="bio" class="form-control" rows="4">{{ tutor.bio|default:'' }}</textarea>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">السيرة الذاتية (CV)</label>
+              <input type="file" name="cv" class="form-control" {% if not user.profile.cv %}required{% endif %}>
+              {% if user.profile.cv %}
+                <div class="form-text mt-2">
+                  تم رفع ملف سابق:
+                  <a href="{{ user.profile.cv.url }}" target="_blank">عرض السيرة الذاتية</a>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 mt-4" type="submit">
+            حفظ الملف
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

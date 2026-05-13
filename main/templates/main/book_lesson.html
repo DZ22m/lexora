@@ -1,0 +1,86 @@
+{% extends "main/base.html" %}
+
+{% block title %}حجز درس مع {{ tutor.name }}{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 900px;">
+    <div class="row g-4 align-items-start">
+
+      <div class="col-lg-7">
+        <div class="card p-4 h-100">
+          <h1 class="fw-bold mb-2">احجز درسًا مع {{ tutor.name }}</h1>
+          <p class="text-secondary mb-3">{{ tutor.language }} • {{ tutor.country }}</p>
+
+          {% if tutor.photo %}
+            <img src="{{ tutor.photo.url }}" alt="{{ tutor.name }}"
+                 style="width: 100%; max-height: 280px; object-fit: contain; background:#f8f6f2; border-radius:16px; padding:10px; margin-bottom:20px;">
+          {% endif %}
+
+          <div class="p-3 rounded-4 mb-4" style="background:#F8F6F2;">
+            <div class="fw-bold mb-1">تفاصيل الدرس</div>
+            <div class="text-secondary">مدة الدرس: جلسة واحدة</div>
+            <div class="text-secondary">السعر: <strong>${{ tutor.price }}</strong></div>
+          </div>
+
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label class="form-label">تاريخ الدرس</label>
+              <input type="date" name="lesson_date" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">وقت الدرس</label>
+              <input type="time" name="lesson_time" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">ملاحظة للمعلّم</label>
+              <textarea name="note" class="form-control" rows="4" placeholder="اكتب ملاحظة بسيطة..."></textarea>
+            </div>
+
+            <button class="btn btn-primary btn-lg w-100">
+              تأكيد الحجز
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="card p-4 sticky-top" style="top: 24px;">
+          <h4 class="fw-bold mb-3">ملخص الحجز</h4>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-secondary">المعلّم</span>
+            <strong>{{ tutor.name }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-secondary">اللغة</span>
+            <strong>{{ tutor.language }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-secondary">العملة</span>
+            <strong>USD</strong>
+          </div>
+
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-secondary">السعر</span>
+            <strong>${{ tutor.price }}</strong>
+          </div>
+
+          <hr>
+
+          <div class="small text-secondary">
+            عند تأكيد الحجز سيتم حفظ الطلب في حسابك، وسنربط هذه الخطوة لاحقًا ببوابة دفع إلكترونية.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

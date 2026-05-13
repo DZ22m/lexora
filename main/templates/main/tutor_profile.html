@@ -1,0 +1,86 @@
+{% extends "main/base.html" %}
+
+{% block title %}{{ tutor.name }} — Lexora{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4 align-items-start">
+
+      <!-- معلومات المعلّم -->
+      <div class="col-lg-7">
+        <div class="card p-4">
+
+          {% if tutor.photo %}
+            <img src="{{ tutor.photo.url }}" alt="{{ tutor.name }}"
+                 style="width: 100%; max-height: 360px; object-fit: contain; background: #f8f6f2; border-radius: 16px; margin-bottom: 20px; padding: 12px;">
+          {% else %}
+            <div style="width: 100%; height: 280px; background: #eee; border-radius: 16px; display:flex; align-items:center; justify-content:center; margin-bottom: 20px;">
+              لا توجد صورة
+            </div>
+          {% endif %}
+
+          <h1 class="fw-bold mb-2">{{ tutor.name }}</h1>
+          <p class="text-secondary mb-3">{{ tutor.language }} • {{ tutor.country }}</p>
+
+          <p class="mb-3 fw-semibold text-warning">
+            ★★★★★ <span class="text-dark">التقييم: {{ tutor.rating }} / 5</span>
+          </p>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="p-3 rounded-4" style="background:#F1ECE2;">
+                <div class="text-secondary small">عدد الطلاب</div>
+                <div class="fw-bold fs-5">{{ tutor.students }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-4" style="background:#F1ECE2;">
+                <div class="text-secondary small">عدد الدروس</div>
+                <div class="fw-bold fs-5">{{ tutor.lessons }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded-4" style="background:#F1ECE2;">
+                <div class="text-secondary small">السعر</div>
+                <div class="fw-bold fs-5">${{ tutor.price }}</div>
+              </div>
+            </div>
+          </div>
+
+          <h5 class="fw-bold mb-2">نبذة عن المعلّم</h5>
+          <p class="text-secondary mb-0">{{ tutor.bio }}</p>
+
+        </div>
+      </div>
+
+      <!-- صندوق الحجز -->
+      <div class="col-lg-5">
+        <div class="card p-4 sticky-top" style="top: 24px;">
+          <h4 class="fw-bold mb-3">ابدأ التعلم مع {{ tutor.name }}</h4>
+          <p class="text-secondary">احجز درسًا الآن وابدأ رحلتك التعليمية.</p>
+
+          <div class="d-grid gap-2 mt-3">
+
+            {% if user.is_authenticated %}
+              {% if user.profile.role != "TUTOR" %}
+                <a href="{% url 'book_lesson' tutor.id %}" class="btn btn-primary btn-lg">
+                  احجز درس الآن
+                </a>
+              {% endif %}
+            {% else %}
+              <a href="{% url 'book_lesson' tutor.id %}" class="btn btn-primary btn-lg">
+                احجز درس الآن
+              </a>
+            {% endif %}
+
+            <button class="btn btn-outline-dark">راسل المعلّم</button>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

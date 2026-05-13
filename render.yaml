@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: lexora
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn italki_site.wsgi:application"
+
+    envVars:
+      - key: DEBUG
+        value: False

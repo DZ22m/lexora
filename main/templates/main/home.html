@@ -1,0 +1,58 @@
+{% extends "main/base.html" %}
+
+{% block title %}Lexora{% endblock %}
+
+{% block content %}
+
+<!-- ✅ حالة طلب المعلّم -->
+{% if application_status %}
+  <section class="pt-4">
+    <div class="container">
+      {% if application_status == "PENDING" %}
+        <div class="alert alert-warning shadow-sm border-0">
+          طلبك كمعلّم قيد المراجعة حاليًا. سنخبرك عند تحديث الحالة.
+        </div>
+      {% elif application_status == "INTERVIEW" %}
+        <div class="alert alert-info shadow-sm border-0">
+          تم نقل طلبك إلى مرحلة المقابلة. سيتم التواصل معك قريبًا لتحديد الموعد.
+        </div>
+      {% elif application_status == "APPROVED" %}
+        <div class="alert alert-success shadow-sm border-0">
+          تم قبولك كمعلّم في Lexora ✅ يمكنك الآن البدء واستكمال نشاطك على المنصة.
+        </div>
+      {% elif application_status == "REJECTED" %}
+        <div class="alert alert-danger shadow-sm border-0">
+          نعتذر، لم يتم قبول طلبك حاليًا. يمكنك تطوير ملفك والتقديم لاحقًا.
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}
+
+{% if admin_note %}
+  <section class="pb-2">
+    <div class="container">
+      <div class="alert alert-light shadow-sm border">
+        <strong>ملاحظة من الإدارة:</strong>
+        <div class="mt-2 text-secondary">{{ admin_note }}</div>
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+<!-- Hero Section -->
+<section class="py-5">
+  <div class="container text-center">
+    <h1 class="fw-bold mb-3">ابدأ رحلتك التعليمية مع Lexora</h1>
+    <p class="text-secondary mb-4">
+      منصة تربطك بأفضل المعلّمين حول العالم لتجربة تعلم مرنة واحترافية.
+    </p>
+
+    <div class="d-flex justify-content-center gap-3">
+      <a href="/tutors/" class="btn btn-primary btn-lg">استعرض المعلمين</a>
+      <a href="/accounts/register/" class="btn btn-outline-dark btn-lg">إنشاء حساب</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

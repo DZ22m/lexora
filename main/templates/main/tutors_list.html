@@ -1,0 +1,57 @@
+{% extends "main/base.html" %}
+
+{% block title %}Lexora — المعلمون{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div>
+        <h1 class="fw-bold mb-1">اختر معلّمك</h1>
+        <p class="text-secondary mb-0">نخبة من المعلّمين بتجربة تعلم راقية ومرنة.</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {% for t in tutors %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+
+          {% if t.photo %}
+            <img src="{{ t.photo.url }}" alt="{{ t.name }}"
+                 style="width: 100%; height: 220px; object-fit: contain; background: #f8f6f2; padding: 10px;">
+          {% else %}
+            <div style="width: 100%; height: 220px; background: #eee; display:flex; align-items:center; justify-content:center;">
+              لا توجد صورة
+            </div>
+          {% endif %}
+
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h5 class="fw-bold mb-1">{{ t.name }}</h5>
+                <p class="text-secondary mb-0">{{ t.language }} • {{ t.country }}</p>
+              </div>
+              <span class="badge rounded-pill" style="background:#EADBC0; color:#0F172A;">
+                مميز
+              </span>
+            </div>
+
+            <p class="mt-3 mb-2 fw-semibold text-warning">
+              ★★★★★ <span class="text-dark">{{ t.rating }} / 5</span>
+            </p>
+
+            <p class="fw-bold mb-3">${{ t.price }} / lesson</p>
+
+            <a href="{% url 'tutor_profile' t.id %}" class="btn btn-primary w-100">
+              عرض الملف
+            </a>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

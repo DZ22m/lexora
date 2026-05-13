@@ -1,0 +1,92 @@
+{% extends "main/base.html" %}
+
+{% block title %}حجوزاتي — Lexora{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+      <div>
+        <h1 class="fw-bold mb-1">حجوزاتي</h1>
+        <p class="text-secondary mb-0">تابعي جميع دروسك المحجوزة في مكان واحد.</p>
+      </div>
+      <a href="/tutors/" class="btn btn-outline-dark">احجز درسًا جديدًا</a>
+    </div>
+
+    {% if bookings %}
+      <div class="row g-4">
+        {% for booking in bookings %}
+        <div class="col-lg-6">
+          <div class="card h-100 border-0 shadow-sm overflow-hidden">
+
+            {% if booking.tutor.photo %}
+              <img src="{{ booking.tutor.photo.url }}" alt="{{ booking.tutor.name }}"
+                   style="width: 100%; height: 220px; object-fit: cover;">
+            {% else %}
+              <div style="width: 100%; height: 220px; background: #eee; display:flex; align-items:center; justify-content:center;">
+                لا توجد صورة
+              </div>
+            {% endif %}
+
+            <div class="card-body p-4">
+
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h4 class="fw-bold mb-1">{{ booking.tutor.name }}</h4>
+                  <p class="text-secondary mb-0">
+                    {{ booking.tutor.language }} • {{ booking.tutor.country }}
+                  </p>
+                </div>
+
+                <span class="badge rounded-pill" style="background:#EADBC0; color:#0F172A;">
+                  مؤكد
+                </span>
+              </div>
+
+              <p class="mb-2"><strong>📅 التاريخ:</strong> {{ booking.lesson_date }}</p>
+              <p class="mb-2"><strong>⏰ الوقت:</strong> {{ booking.lesson_time }}</p>
+
+              <!-- السعر فقط -->
+              <p class="mb-3"><strong>💰 السعر:</strong> ${{ booking.amount }}</p>
+
+              {% if booking.note %}
+                <div class="p-3 rounded-3 mb-3" style="background:#F8F6F2;">
+                  <strong>ملاحظتك:</strong>
+                  <div class="text-secondary mt-1">{{ booking.note }}</div>
+                </div>
+              {% endif %}
+
+              <div class="d-grid gap-2">
+
+                <a href="{% url 'tutor_profile' booking.tutor.id %}" class="btn btn-primary">
+                  عرض ملف المعلّم
+                </a>
+
+                <form method="post" action="{% url 'delete_booking' booking.id %}">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="btn btn-outline-danger w-100"
+                          onclick="return confirm('هل أنتِ متأكدة من حذف هذا الحجز؟');">
+                    حذف الحجز 🗑️
+                  </button>
+                </form>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card border-0 shadow-sm p-5 text-center">
+        <h3 class="fw-bold mb-3">لا توجد لديك حجوزات حتى الآن</h3>
+        <p class="text-secondary mb-4">ابدئي باختيار أحد المعلّمين المناسبين لكِ.</p>
+        <a href="/tutors/" class="btn btn-primary btn-lg">استعرضي المعلمين</a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}
