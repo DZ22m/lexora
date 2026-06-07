@@ -1,3 +1,6 @@
+import requests
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,6 +9,29 @@ from django.shortcuts import render, redirect
 
 from .models import Profile
 from main.models import Tutor
+
+
+def send_lexora_email(to_email, subject, html):
+    if not settings.RESEND_API_KEY:
+        return
+
+    try:
+        requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "from": settings.DEFAULT_FROM_EMAIL,
+                "to": [to_email],
+                "subject": subject,
+                "html": html,
+            },
+            timeout=10,
+        )
+    except Exception:
+        pass
 
 
 def register(request):
@@ -39,6 +65,20 @@ def register(request):
         if role == "TUTOR":
             login(request, user)
             return redirect("tutor_onboarding")
+
+        if user.email:
+            send_lexora_email(
+                user.email,
+                "مرحبًا بك في Lexora",
+                f"""
+                <div style="font-family: Arial; direction: rtl; text-align: right;">
+                    <h2>مرحبًا {user.username} 👋</h2>
+                    <p>تم إنشاء حسابك في Lexora بنجاح.</p>
+                    <p>يمكنك الآن تسجيل الدخول والبدء في حجز الدروس مع المعلمين.</p>
+                    <p>شكرًا لانضمامك إلينا.</p>
+                </div>
+                """
+            )
 
         messages.success(request, "تم إنشاء الحساب بنجاح. يمكنك تسجيل الدخول الآن.")
         return redirect("login")
@@ -121,6 +161,20 @@ def tutor_onboarding(request):
 
         profile.status = "PENDING"
         profile.save()
+
+        if request.user.email:
+            send_lexora_email(
+                request.user.email,
+                "تم استلام طلبك كمعلم في Lexora",
+                f"""
+                <div style="font-family: Arial; direction: rtl; text-align: right;">
+                    <h2>مرحبًا {request.user.username} 👋</h2>
+                    <p>تم استلام طلبك للانضمام كمعلم في Lexora.</p>
+                    <p>طلبك الآن قيد المراجعة من الإدارة.</p>
+                    <p>سنقوم بتحديث حالة طلبك داخل الموقع عند الانتهاء من المراجعة.</p>
+                </div>
+                """
+            )
 
         messages.success(request, "تم إرسال ملفك بنجاح وهو الآن قيد المراجعة ✅")
         return redirect("home")
