@@ -96,3 +96,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET", "")
+
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+
+DEFAULT_FROM_EMAIL = "Lexora <hello@lexoraapp.com>"
