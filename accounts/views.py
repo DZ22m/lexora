@@ -37,18 +37,27 @@ def send_lexora_email(to_email, subject, html):
 def register(request):
     if request.method == "POST":
         username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
         role = request.POST.get("role", "STUDENT")
 
-        if not username or not password:
-            messages.error(request, "الرجاء إدخال اسم مستخدم وكلمة مرور.")
+        if not username or not email or not password:
+            messages.error(request, "الرجاء إدخال جميع البيانات المطلوبة.")
             return redirect("register")
 
         if User.objects.filter(username=username).exists():
             messages.error(request, "اسم المستخدم مستخدم بالفعل، اختاري اسمًا آخر.")
             return redirect("register")
 
-        user = User.objects.create_user(username=username, password=password)
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "البريد الإلكتروني مستخدم بالفعل.")
+            return redirect("register")
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
 
         profile = Profile.objects.filter(user=user).first()
         if profile is None:
@@ -66,19 +75,18 @@ def register(request):
             login(request, user)
             return redirect("tutor_onboarding")
 
-        if user.email:
-            send_lexora_email(
-                user.email,
-                "مرحبًا بك في Lexora",
-                f"""
-                <div style="font-family: Arial; direction: rtl; text-align: right;">
-                    <h2>مرحبًا {user.username} 👋</h2>
-                    <p>تم إنشاء حسابك في Lexora بنجاح.</p>
-                    <p>يمكنك الآن تسجيل الدخول والبدء في حجز الدروس مع المعلمين.</p>
-                    <p>شكرًا لانضمامك إلينا.</p>
-                </div>
-                """
-            )
+        send_lexora_email(
+            user.email,
+            "مرحبًا بك في Lexora",
+            f"""
+            <div style="font-family: Arial; direction: rtl; text-align: right;">
+                <h2>مرحبًا {user.username} 👋</h2>
+                <p>تم إنشاء حسابك في Lexora بنجاح.</p>
+                <p>يمكنك الآن تسجيل الدخول والبدء في حجز الدروس مع المعلمين.</p>
+                <p>شكرًا لانضمامك إلينا.</p>
+            </div>
+            """
+        )
 
         messages.success(request, "تم إنشاء الحساب بنجاح. يمكنك تسجيل الدخول الآن.")
         return redirect("login")
@@ -162,19 +170,18 @@ def tutor_onboarding(request):
         profile.status = "PENDING"
         profile.save()
 
-        if request.user.email:
-            send_lexora_email(
-                request.user.email,
-                "تم استلام طلبك كمعلم في Lexora",
-                f"""
-                <div style="font-family: Arial; direction: rtl; text-align: right;">
-                    <h2>مرحبًا {request.user.username} 👋</h2>
-                    <p>تم استلام طلبك للانضمام كمعلم في Lexora.</p>
-                    <p>طلبك الآن قيد المراجعة من الإدارة.</p>
-                    <p>سنقوم بتحديث حالة طلبك داخل الموقع عند الانتهاء من المراجعة.</p>
-                </div>
-                """
-            )
+        send_lexora_email(
+            request.user.email,
+            "تم استلام طلبك كمعلم في Lexora",
+            f"""
+            <div style="font-family: Arial; direction: rtl; text-align: right;">
+                <h2>مرحبًا {request.user.username} 👋</h2>
+                <p>تم استلام طلبك للانضمام كمعلم في Lexora.</p>
+                <p>طلبك الآن قيد المراجعة من الإدارة.</p>
+                <p>سنقوم بتحديث حالة طلبك داخل الموقع عند الانتهاء من المراجعة.</p>
+            </div>
+            """
+        )
 
         messages.success(request, "تم إرسال ملفك بنجاح وهو الآن قيد المراجعة ✅")
         return redirect("home")
