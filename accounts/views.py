@@ -1,4 +1,3 @@
-```python
 import requests
 
 from django.conf import settings
@@ -189,4 +188,4 @@ def tutor_onboarding(request):
         return redirect("home")
 
     return render(request, "accounts/tutor_onboarding.html", {"tutor": tutor})
-```
+
