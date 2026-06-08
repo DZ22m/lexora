@@ -1,3 +1,4 @@
+```python
 import requests
 
 from django.conf import settings
@@ -13,11 +14,10 @@ from main.models import Tutor
 
 def send_lexora_email(to_email, subject, html):
     if not settings.RESEND_API_KEY:
-        print("RESEND_API_KEY NOT FOUND")
         return
 
     try:
-        response = requests.post(
+        requests.post(
             "https://api.resend.com/emails",
             headers={
                 "Authorization": f"Bearer {settings.RESEND_API_KEY}",
@@ -32,11 +32,8 @@ def send_lexora_email(to_email, subject, html):
             timeout=20,
         )
 
-        print("RESEND STATUS:", response.status_code)
-        print("RESEND RESPONSE:", response.text)
-
-    except Exception as e:
-        print("RESEND ERROR:", str(e))
+    except Exception:
+        pass
 
 
 def register(request):
@@ -192,3 +189,4 @@ def tutor_onboarding(request):
         return redirect("home")
 
     return render(request, "accounts/tutor_onboarding.html", {"tutor": tutor})
+```
