@@ -13,10 +13,11 @@ from main.models import Tutor
 
 def send_lexora_email(to_email, subject, html):
     if not settings.RESEND_API_KEY:
+        print("RESEND_API_KEY NOT FOUND")
         return
 
     try:
-        requests.post(
+        response = requests.post(
             "https://api.resend.com/emails",
             headers={
                 "Authorization": f"Bearer {settings.RESEND_API_KEY}",
@@ -28,10 +29,14 @@ def send_lexora_email(to_email, subject, html):
                 "subject": subject,
                 "html": html,
             },
-            timeout=10,
+            timeout=20,
         )
-    except Exception:
-        pass
+
+        print("RESEND STATUS:", response.status_code)
+        print("RESEND RESPONSE:", response.text)
+
+    except Exception as e:
+        print("RESEND ERROR:", str(e))
 
 
 def register(request):
