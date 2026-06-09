@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from accounts.views import send_lexora_email
 from .models import Tutor, Booking
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -67,6 +68,43 @@ def book_lesson(request, tutor_id):
             currency="USD",
             is_paid=False,
         )
+
+        student_email = request.user.email
+        tutor_email = tutor.user.email if tutor.user else ""
+
+        if student_email:
+            send_lexora_email(
+                student_email,
+                "تم إنشاء حجزك في Lexora",
+                f"""
+                <div style="font-family: Arial; direction: rtl; text-align: right;">
+                    <h2>تم إنشاء حجزك بنجاح ✅</h2>
+                    <p>مرحبًا {request.user.username}،</p>
+                    <p>تم إنشاء حجزك مع المعلم <strong>{tutor.name}</strong>.</p>
+                    <p><strong>تاريخ الدرس:</strong> {lesson_date}</p>
+                    <p><strong>وقت الدرس:</strong> {lesson_time}</p>
+                    <p><strong>المبلغ:</strong> {amount} USD</p>
+                    <p>يرجى إكمال الدفع لتأكيد الحجز.</p>
+                </div>
+                """
+            )
+
+        if tutor_email:
+            send_lexora_email(
+                tutor_email,
+                "لديك حجز جديد في Lexora",
+                f"""
+                <div style="font-family: Arial; direction: rtl; text-align: right;">
+                    <h2>لديك حجز جديد 📚</h2>
+                    <p>مرحبًا {tutor.name}،</p>
+                    <p>قام الطالب <strong>{request.user.username}</strong> بإنشاء حجز جديد معك.</p>
+                    <p><strong>تاريخ الدرس:</strong> {lesson_date}</p>
+                    <p><strong>وقت الدرس:</strong> {lesson_time}</p>
+                    <p><strong>ملاحظات الطالب:</strong> {note or "لا توجد ملاحظات"}</p>
+                    <p>يرجى متابعة الحجز من لوحة التحكم أو صفحة الحجوزات.</p>
+                </div>
+                """
+            )
 
         return redirect("checkout_booking", booking_id=booking.id)
 
