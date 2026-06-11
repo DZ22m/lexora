@@ -22,6 +22,7 @@ urlpatterns = [
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
+    path("robots.txt", views.robots_txt, name="robots_txt"),
 
     path('', views.home, name='home'),
     path('tutors/', views.tutors_list, name='tutors_list'),

@@ -29,6 +29,15 @@ def home(request):
     })
 
 
+def robots_txt(request):
+    content = """User-agent: *
+Allow: /
+
+Sitemap: https://lexoraapp.com/sitemap.xml
+"""
+    return HttpResponse(content, content_type="text/plain")
+
+
 def tutors_list(request):
     tutors = Tutor.objects.filter(
         is_active=True,
