@@ -1,10 +1,13 @@
+
 {% extends "main/base.html" %}
 
-{% block title %}Lexora{% endblock %}
+{% block title %}Lexora | Learn Languages Online with Expert Tutors{% endblock %}
+
+{% block meta_description %}Learn languages online with Lexora. Find language tutors, explore teacher profiles, and book personalized online lessons.{% endblock %}
 
 {% block content %}
 
-<!-- ✅ حالة طلب المعلّم -->
+<!-- Teacher Application Status -->
 {% if application_status %}
   <section class="pt-4">
     <div class="container">
@@ -29,6 +32,7 @@
   </section>
 {% endif %}
 
+<!-- Admin Note -->
 {% if admin_note %}
   <section class="pb-2">
     <div class="container">
@@ -43,15 +47,27 @@
 <!-- Hero Section -->
 <section class="py-5">
   <div class="container text-center">
-    <h1 class="fw-bold mb-3">ابدأ رحلتك التعليمية مع Lexora</h1>
+
+    <h1 class="fw-bold mb-3">
+      ابدأ رحلتك في تعلم اللغات مع Lexora
+    </h1>
+
     <p class="text-secondary mb-4">
-      منصة تربطك بأفضل المعلّمين حول العالم لتجربة تعلم مرنة واحترافية.
+      تعلّم اللغات عبر الإنترنت مع معلمين من مختلف أنحاء العالم.
+      اكتشف المعلم المناسب لك، واستعرض ملفه الشخصي،
+      واحجز دروسك بسهولة لتبدأ رحلة تعليمية مرنة تناسب أهدافك.
     </p>
 
-    <div class="d-flex justify-content-center gap-3">
-      <a href="/tutors/" class="btn btn-primary btn-lg">استعرض المعلمين</a>
-      <a href="/accounts/register/" class="btn btn-outline-dark btn-lg">إنشاء حساب</a>
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="/tutors/" class="btn btn-primary btn-lg">
+        استعرض المعلمين
+      </a>
+
+      <a href="/accounts/register/" class="btn btn-outline-dark btn-lg">
+        إنشاء حساب
+      </a>
     </div>
+
   </div>
 </section>
 
